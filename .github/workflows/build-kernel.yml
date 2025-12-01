@@ -5,7 +5,7 @@ on:
 jobs:
   build:
     name: Build Kernel by ${{ github.actor }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
@@ -85,7 +85,7 @@ jobs:
 
     - name: Setup build kernel environment
       run: |
-        echo "BUILD_TIME=$(TZ=Asia/Shanghai date "+%Y%m%d%H%M")" >> $GITHUB_ENV
+        echo "BUILD_TIME=$(TZ=Asia/Jakarta date "+%Y%m%d%H%M")" >> $GITHUB_ENV
         echo "DEVICE=$(echo ${{ env.KERNEL_CONFIG }} | sed 's!vendor/!!;s/_defconfig//;s/_user//;s/-perf//')" >> $GITHUB_ENV
         sudo apt-get update
         sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 python3
@@ -136,26 +136,9 @@ jobs:
         fi
 
     - name: Download Custom-Gcc
-      if: env.USE_CUSTOM_GCC_64 == 'true' || env.USE_CUSTOM_GCC_32 == 'true'
+      if: env.USE_CUSTOM_GCC_32 == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace
-        if [ ${{ env.USE_CUSTOM_GCC_64 }} = true ]; then
-          if [[ ${{ env.CUSTOM_GCC_64_SOURCE }} =~ git ]]; then
-              if [[ ${{ env.CUSTOM_GCC_64_SOURCE }} == *'.tar.gz' ]]; then
-                wget -O gcc-64.tar.gz ${{ env.CUSTOM_GCC_64_SOURCE }}
-                mkdir gcc-64
-                tar -C gcc-64/ -zxvf gcc-64.tar.gz
-              else
-                git clone ${{ env.CUSTOM_GCC_64_SOURCE }} -b ${{ env.CUSTOM_GCC_64_BRANCH }} gcc-64 --depth=1
-              fi
-          else
-              wget -O gcc-64.zip ${{ env.CUSTOM_GCC_64_SOURCE }}
-              mkdir gcc-64
-              unzip gcc-64.zip -d gcc-64/
-          fi
-          echo "GCC_64=CROSS_COMPILE=$GITHUB_WORKSPACE/kernel_workspace/gcc-64/bin/${{ env.CUSTOM_GCC_64_BIN }}" >> $GITHUB_ENV
-        fi
-
         if [ ${{ env.USE_CUSTOM_GCC_32 }} = true ]; then
           if [[ ${{ env.CUSTOM_GCC_32_SOURCE }} =~ git ]]; then
               if [[ ${{ env.CUSTOM_GCC_32_SOURCE }} == *'.tar.gz' ]]; then
