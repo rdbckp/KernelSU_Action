@@ -135,7 +135,7 @@ jobs:
         if [ ${{ env.ENABLE_CCACHE }} = true ]; then
             make -j$(nproc --all) CC="ccache clang" O=out ARCH=${{ env.ARCH }} ${{ env.CUSTOM_CMDS }} ${{ env.EXTRA_CMDS }} ${{ env.GCC_32 }}
         else
-            make O=out ARCH=${{ env.ARCH }} CC=clang HOSTCC=clang CLANG_TRIPLE=arm-linux-gnueabi- ${{ env.GCC_32 }} -j$(nproc --all)
+            make O=out ARCH=${{ env.ARCH }} CC=clang HOSTCC=clang ${{ env.CUSTOM_CMDS }} ${{ env.CUSTOM_GCC_32_BIN }} -j$(nproc --all)
         fi
 
     - name: Check a kernel output files
