@@ -124,7 +124,7 @@ jobs:
           export KSU_EXPECTED_HASH=${{ env.KSU_EXPECTED_HASH }}
         fi
         ./build_kernel.sh
-        mkdir -p out/arch/${{ env.ARCH }}/boot/${{ env.KERNEL_IMAGE_NAME }}
+        mkdir -p out/arch/${{ env.ARCH }}/boot
         cp ${{ env.KERNEL_IMAGE_NAME }} out/arch/${{ env.ARCH }}/boot/${{ env.KERNEL_IMAGE_NAME }}
         
     - name: Check a kernel output files
